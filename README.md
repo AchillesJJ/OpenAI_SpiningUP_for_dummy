@@ -99,5 +99,67 @@ ppo(env_fn=env_fn, ac_kwargs=ac_kwargs, steps_per_epoch=5000, epochs=200, logger
 ```
 + Once the training is over, the best model will be stored in given `output_dir` which always have the following files:
 ```
+outputs/
+  config.json
+  process.txt
+  simple_save/
+    model_info.pkl
+    saved_model.pb
+    variables/
+      variables.data-00000-of-00001
+      variables.index
+```
+&#160;&#160;&#160;&#160; `config.json` and `process.txt` contains the model configuration and outputs during training process. Though **SpinningUP** provides easy ways, such as `test_policy` to check the policy model, I still recommand to restore the model by `tensorflow` from scratch. Everything needed to restore the trained agent is contained in the file `simple_save`, and we can restore it by using `tf.saved_model.loader.load`. Before the loading, we shall `saved_model_cli` command-line provided by `tensorflow`
+```
+saved_model_cli show --dir simple_save --all
+```
+&#160;&#160;&#160;&#160; then we got
+```
+MetaGraphDef with tag-set: 'serve' contains the following SignatureDefs:
 
+signature_def['serving_default']:
+  The given SavedModel SignatureDef contains the following input(s):
+    inputs['x'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1, 2)
+        name: Placeholder:0
+  The given SavedModel SignatureDef contains the following output(s):
+    outputs['pi'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1, 1)
+        name: pi/add:0
+    outputs['v'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1)
+        name: v/Squeeze:0
+  Method name is: tensorflow/serving/predict
+```
+&#160;&#160;&#160;&#160; From the information given above, we can know the details of model. For example, the `tag` of the model is `serve`, the input node name is `Placeholder:0` and output node of policy network is `pi/add:0`. All of these are important for us to rebuild and run the saved model. Once we have these, we can now do the following
+```
+import tensorflow as tf
+import matplotlib.pyplot as plt
+import numpy as np
+
+export_dir = './simple_save' # model path
+
+with tf.Session(graph=tf.Graph()) as sess:
+    tf.saved_model.loader.load(sess, ['serve'], export_dir) # load model
+    graph = tf.get_default_graph()
+    x = graph.get_tensor_by_name('Placeholder:0') # get the input node tensor by name
+    q = graph.get_tensor_by_name('pi/add:0') # get the output node tensor of policy by name
+    # policy outputs
+    ls = []
+    dim = 80
+    for i in range(80):
+        for j in range(80):
+            rho_0 = (1.0/80)*(i+1)
+            theta = (1.0/80)*(i+1)
+            ls.append([rho_0, theta])
+    pi = sess.run(q, feed_dict={x:ls}) # feed and evaluate the network
+
+pi = np.array(pi)
+pi = pi[:, 0]
+pi = np.reshape(pi, (80, 80)).transpose()
+plt.matshow(pi)
+plt.show()
 ```
