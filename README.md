@@ -6,6 +6,3 @@ Representative example of using OpenAI SpinningUP repo with custom gym environme
 
 ### Main framework of SpinningUP
 &#160;&#160;&#160;&#160; **SpinningUP** seperates a typical RL task into two parts: environment(Env) and agent(algorithm). Env module is responsible for the interaction between agent and outer-environment and always follows the same API of OpenAI Gym. Agent module contains multiple great RL algorithm (DDPG, TRPO, PPO, etc) and is resposible for the training on given env. In the following, we show an example which deploys a agent (PPO) on a self-defined env.
-
-#### Custom env
-&#160;&#160;&#160;&#160; 
