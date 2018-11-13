@@ -26,9 +26,9 @@ gym-foo/
 from setuptools import setup
 
 setup(
-  name='gym_foo',
-  version='0.0.1',
-  install_requires=['gym'] # and any other dependencies that foo needs
+    name='gym_foo',
+    version='0.0.1',
+    install_requires=['gym'] # and any other dependencies that foo needs
 )
 ```
 + `gym-foo/gym_foo/__init__.py` should have:
@@ -37,8 +37,8 @@ setup(
 from gym.envs.registration import register
 
 register(
-  id='foo-v0', # name in gym.make('foo-v0')
-  entry_point='gym_foo.envs:FooEnv',
+    id='foo-v0', # name in gym.make('foo-v0')
+    entry_point='gym_foo.envs:FooEnv',
 )
 ```
 + `gym-foo/gym_foo/envs/__init__.py` should have:
@@ -53,16 +53,16 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 
 class FooEnv(gym.Env):
-  metadata = {'render.modes': ['human']}
+    metadata = {'render.modes': ['human']}
 
-  def __init__(self):
-    ...
-  def step(self, action):
-    ...
-  def reset(self):
-    ...
-  def render(self, mode='human', close=False):
-    ...
+    def __init__(self):
+        ...
+    def step(self, action):
+        ...
+    def reset(self):
+        ...
+    def render(self, mode='human', close=False):
+        ...
 ```
 + Once all is done, we can just `cd gym-foo/` and install the custom environment with pip `pip3 install -e .`. This will enable us to use the custom just as Gym itself. For example,
 ```
