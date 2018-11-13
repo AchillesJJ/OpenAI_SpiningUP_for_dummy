@@ -9,7 +9,7 @@ Representative example of using OpenAI SpinningUP repo with custom gym environme
 
 #### Custom env
 Custom env must have be registered by Gym and has the same API as Gym.
-+ To be registered by Gym, youe custom env module should have at least the following files (structures):
++ To be registered by Gym, your custom env module should have at least the following files (structures):
 ```
 gym-foo/
   README.md
@@ -18,7 +18,7 @@ gym-foo/
     __init__.py
     envs/
       __init__.py
-    foo_env.py
+      foo_env.py
 ```
 + `gym-foo/setup.py` should have:
 ```
@@ -44,7 +44,7 @@ register(
 + `gym-foo/gym_foo/envs/__init__.py` should have:
 ```
 # just relative import
-from gym_foo envs.foo_env import FooEnv
+from gym_foo.envs.foo_env import FooEnv
 ```
 + Important part: custom env `gym-foo/gym_foo/envs/foo_env.py` must have the same API as Gym. Thus it should at least realize three major methods `reset`, `step` and `render`. A typical env should look like:
 ```
