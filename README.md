@@ -1,8 +1,6 @@
 # OpenAI_SpiningUP_for_dummy
 Representative example of using OpenAI SpinningUP repo with custom gym environment
 
-$$\alpha$$
-
 ## Introduction to OpenAI-SpinningUP
 &#160;&#160;&#160;&#160; **SpinningUP** is a deep reinforcement learning (RL) project proposed by OpenAI recently. In my opinion, both the API and source code is very elegant and much easier to use than Baseline project, especially for dummy like myself.
 
