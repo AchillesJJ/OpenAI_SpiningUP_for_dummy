@@ -10,7 +10,7 @@ Representative example of using OpenAI SpinningUP repo with custom gym environme
 #### Custom env
 Custom env must have be registered by Gym and has the same API as Gym.
 + To be registered by Gym, your custom env module should have at least the following files (structures):
-```
+```python
 gym-foo/
   README.md
   setup.py
@@ -21,7 +21,7 @@ gym-foo/
       foo_env.py
 ```
 + `gym-foo/setup.py` should have:
-```
+```python
 # used for env setup and dependencies install
 from setuptools import setup
 
@@ -32,7 +32,7 @@ setup(
 )
 ```
 + `gym-foo/gym_foo/__init__.py` should have:
-```
+```python
 # register your env to Gym so we can use common API later
 from gym.envs.registration import register
 
@@ -42,12 +42,12 @@ register(
 )
 ```
 + `gym-foo/gym_foo/envs/__init__.py` should have:
-```
+```python
 # just relative import
 from gym_foo.envs.foo_env import FooEnv
 ```
 + Important part: custom env `gym-foo/gym_foo/envs/foo_env.py` must have the same API as Gym. Thus it should at least realize three major methods `reset`, `step` and `render`. A typical env should look like:
-```
+```python
 import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
@@ -65,7 +65,7 @@ class FooEnv(gym.Env):
         ...
 ```
 + Once all is done, we can just `cd gym-foo/` and install the custom environment with pip `pip3 install -e .`. This will enable us to use the custom just as Gym itself. For example,
-```
+```python
 import gym
 import gym_foo
 
@@ -78,7 +78,7 @@ ob2, r, done, _ = env.step(action)
 #### Launching agent from scripts
 &#160;&#160;&#160;&#160; **SpinningUP** supports both command-line and scripts. Since we can see more details in script way, we will show a script example only in the following.
 + Script example: deploy a `ppo` agent on out custom env `foo-v0`
-```
+```python
 # encoding: utf-8
 from spinup import ppo
 import tensorflow as tf
@@ -98,7 +98,7 @@ logger_kwargs = dict(output_dir='outputs', exp_name='trial_PPO')
 ppo(env_fn=env_fn, ac_kwargs=ac_kwargs, steps_per_epoch=5000, epochs=200, logger_kwargs=logger_kwargs)
 ```
 + Once the training is over, the best model will be stored in given `output_dir` which always have the following files:
-```
+```python
 outputs/
   config.json
   process.txt
@@ -110,11 +110,11 @@ outputs/
       variables.index
 ```
 &#160;&#160;&#160;&#160; `config.json` and `process.txt` contains the model configuration and outputs during training process. Though **SpinningUP** provides easy ways, such as `test_policy` to check the policy model, I still recommand to restore the model by `tensorflow` from scratch. Everything needed to restore the trained agent is contained in the file `simple_save`, and we can restore it by using `tf.saved_model.loader.load`. Before the loading, we shall `saved_model_cli` command-line provided by `tensorflow`
-```
+```shell
 saved_model_cli show --dir simple_save --all
 ```
 &#160;&#160;&#160;&#160; then we got
-```
+```shell
 MetaGraphDef with tag-set: 'serve' contains the following SignatureDefs:
 
 signature_def['serving_default']:
@@ -135,7 +135,7 @@ signature_def['serving_default']:
   Method name is: tensorflow/serving/predict
 ```
 &#160;&#160;&#160;&#160; From the information given above, we can know the details of model. For example, the `tag` of the model is `serve`, the input node name is `Placeholder:0` and output node of policy network is `pi/add:0`. All of these are important for us to rebuild and run the saved model. Once we have these, we can now do the following
-```
+```python
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
