@@ -163,3 +163,18 @@ pi = np.reshape(pi, (80, 80)).transpose()
 plt.matshow(pi)
 plt.show()
 ```
+
+```python
+class Alpha(AlphaBase):
+    def init(self):
+        ...
+    def run_daily(self, di):
+        ...
+    def _register(self):
+        ...
+    def _synchronize(self, di):
+        ...
+    def _roll_train(self, di, epochs):
+        ...
+```
+
