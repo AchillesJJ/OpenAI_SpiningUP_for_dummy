@@ -166,6 +166,7 @@ plt.show()
 
 ```python
 class Alpha(AlphaBase):
+
     def init(self):
         ...
     def run_daily(self, di):
@@ -174,7 +175,7 @@ class Alpha(AlphaBase):
         ...
     def _synchronize(self, di):
         ...
-    def _roll_train(self, di, epochs):
+    def _roll_train(self, epochs):
         ...
 ```
 
